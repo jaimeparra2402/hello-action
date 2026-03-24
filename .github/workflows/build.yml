@@ -13,12 +13,27 @@ jobs:
     runs-on: ubuntu-latest
     container: node:16-alpine 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Install dependencies 
-        run: npm install
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # O la versión que uses
 
-      - name: Build Antora project 
+      - name: Install dependencies
+        run: npm install  # <--- CRUCIAL: Esto crea la carpeta node_modules
+
+      - name: Crear carpeta de destino
+        run: mkdir -p supplemental-ui
+
+      - name: Copy UI assets
         run: |
-          cp -R node_modules/@antora/lunr-extension/supplemental_ui/* supplemental-ui/ 
-          npx antora local-antora-playbook.yml --fetch 
+          # Usamos un check para ver si la carpeta existe antes de copiar
+          if [ -d "node_modules/@antora/lunr-extension/supplemental_ui" ]; then
+            cp -R node_modules/@antora/lunr-extension/supplemental_ui/* supplemental-ui/
+          else
+            echo "Error: La carpeta de origen no existe. Contenido de node_modules/@antora/:"
+            ls -R node_modules/@antora/
+            exit 1
+          fi
