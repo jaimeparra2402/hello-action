@@ -27,13 +27,3 @@ jobs:
       - name: Crear carpeta de destino
         run: mkdir -p supplemental-ui
 
-      - name: Copy UI assets
-        run: |
-          # Usamos un check para ver si la carpeta existe antes de copiar
-          if [ -d "node_modules/@antora/lunr-extension/supplemental_ui" ]; then
-            cp -R node_modules/@antora/lunr-extension/supplemental_ui/* supplemental-ui/
-          else
-            echo "Error: La carpeta de origen no existe. Contenido de node_modules/@antora/:"
-            ls -R node_modules/@antora/
-            exit 1
-          fi
