@@ -3,34 +3,30 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch: # Esto permite lanzar el workflow manualmente
+  workflow_dispatch: 
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Paso 1: Descargar tu código en el servidor de GitHub
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Paso 2: Instalar Node.js (versión 16 como mencionaste)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '16'
 
-      # Paso 3: INSTALAR LAS DEPENDENCIAS (Esto crea la carpeta node_modules)
-      - name: Install dependencies
+      # ESTO EQUIVALE AL "npm i" QUE DICE LA DOCS
+      - name: Install Antora and Lunr Extension
         run: npm install
 
-      # Paso 4: Crear la carpeta de destino y copiar los archivos de Lunr
-      # El comando mkdir -p evita errores si la carpeta ya existe
+      # AHORA SÍ PODRÁS COPIAR PORQUE YA EXISTE LA CARPETA
       - name: Prepare Lunr Extension
         run: |
           mkdir -p supplemental-ui
           cp -R node_modules/@antora/lunr-extension/supplemental_ui/* supplemental-ui/
 
-      # Paso 5: Construir el sitio de Antora
       - name: Build Antora project
         run: npx antora local-antora-playbook.yml --fetch
